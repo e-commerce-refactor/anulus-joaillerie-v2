@@ -1,41 +1,31 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Truck, RotateCcw, Clock } from 'lucide-react';
+import { ShieldCheck, Truck, RefreshCw, Award } from 'lucide-react';
 
 export default function TrustBadges() {
   return (
-    <section className="bg-brand-surface border-b border-brand-border py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
-            <Truck className="w-7 h-7 text-brand-accent shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-brand-text">Livraison Express</p>
-              <p className="text-[11px] text-brand-muted">24h Casa • 48h Maroc</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
-            <ShieldCheck className="w-7 h-7 text-brand-accent shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-brand-text">Paiement à Réception</p>
-              <p className="text-[11px] text-brand-muted">Payez en espèces après vérification</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
-            <RotateCcw className="w-7 h-7 text-brand-accent shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-brand-text">Échange Simple</p>
-              <p className="text-[11px] text-brand-muted">Garantie satisfaction totale</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
-            <Clock className="w-7 h-7 text-brand-accent shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-brand-text">Support Dédié</p>
-              <p className="text-[11px] text-brand-muted">Assistance WhatsApp 7j/7</p>
-            </div>
-          </div>
+    <section className="py-6 bg-brand-surface border-b border-brand-border">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+        <div className="p-3">
+          <Truck className="w-5 h-5 text-brand-accent mx-auto mb-1" />
+          <p className="font-bold text-xs text-brand-text">Livraison Express</p>
+          <p className="text-[10px] text-brand-muted">24h Casa • 48h Maroc</p>
+        </div>
+        <div className="p-3">
+          <ShieldCheck className="w-5 h-5 text-brand-accent mx-auto mb-1" />
+          <p className="font-bold text-xs text-brand-text">Paiement à Réception</p>
+          <p className="text-[10px] text-brand-muted">Payez après vérification</p>
+        </div>
+        <div className="p-3">
+          <RefreshCw className="w-5 h-5 text-brand-accent mx-auto mb-1" />
+          <p className="font-bold text-xs text-brand-text">Échange Facile</p>
+          <p className="text-[10px] text-brand-muted">Support réactif 7j/7</p>
+        </div>
+        <div className="p-3">
+          <Award className="w-5 h-5 text-brand-accent mx-auto mb-1" />
+          <p className="font-bold text-xs text-brand-text">100% Authentique</p>
+          <p className="text-[10px] text-brand-muted">Qualité garantie</p>
         </div>
       </div>
     </section>

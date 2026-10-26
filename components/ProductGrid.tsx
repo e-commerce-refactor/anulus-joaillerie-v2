@@ -17,16 +17,19 @@ export default function ProductGrid({ onSelectProduct }: ProductGridProps) {
     : PRODUCTS.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="catalogue" className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+    <section id="catalogue" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center space-y-3 mb-10">
+        <span className="text-xs uppercase font-bold tracking-widest text-brand-accent">
+          Collection Officielle Maroc
+        </span>
         <h2 className="text-2xl sm:text-4xl font-extrabold text-brand-text">
-          Collection Officielle Anulus Joaillerie
+          Catalogue & Commandes Express
         </h2>
-        <p className="text-xs sm:text-sm text-brand-muted">
-          Sélection exclusive disponible en stock immédiat à Casablanca. Expédition 24h/48h avec paiement à la réception.
+        <p className="text-xs sm:text-sm text-brand-muted max-w-xl mx-auto">
+          Toutes nos pièces sont en stock physique au Maroc. Livraison rapide avec vérification et paiement à la réception.
         </p>
 
-        {/* Category Filter Pills */}
+        {/* Categories Bar */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
           {categories.map((cat) => (
             <button
@@ -44,7 +47,6 @@ export default function ProductGrid({ onSelectProduct }: ProductGridProps) {
         </div>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((product) => (
           <ProductCard

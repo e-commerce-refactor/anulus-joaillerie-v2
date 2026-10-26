@@ -14,7 +14,7 @@ export default function OrderSuccessModal({ orderInfo, onClose }: OrderSuccessMo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="relative w-full max-w-md rounded-2xl bg-brand-surface border border-brand-border p-6 shadow-2xl text-center space-y-4">
-        
+
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-full text-brand-muted hover:text-brand-text transition-colors"
@@ -59,7 +59,6 @@ export default function OrderSuccessModal({ orderInfo, onClose }: OrderSuccessMo
             <span>Accélérer ma Commande sur WhatsApp</span>
           </a>
         </div>
-
       </div>
     </div>
   );

@@ -8,13 +8,13 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          bg: '#FDFBF7',
-          surface: '#FFFFFF',
-          border: '#EAE3D2',
-          text: '#0F172A',
-          muted: '#64748B',
-          accent: '#D4AF37',
-          accent2: '#8C701B',
+          bg: '#0F0D15',
+          surface: '#1A1724',
+          border: '#2E283E',
+          text: '#FBF8F3',
+          muted: '#A89FA8',
+          accent: '#E0A96D',
+          accent2: '#B07D4C',
         }
       },
       keyframes: {

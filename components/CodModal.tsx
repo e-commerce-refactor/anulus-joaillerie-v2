@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Truck, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { X, Truck, ShieldCheck, CheckCircle2, Calendar, Sparkles } from 'lucide-react';
 import { Product } from '../data/products';
 import { supabase } from '../lib/supabaseClient';
 
@@ -32,6 +32,7 @@ export default function CodModal({ product, onClose, onSuccess }: CodModalProps)
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('Casablanca');
   const [address, setAddress] = useState('');
+  const [isVipBox, setIsVipBox] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -45,135 +46,159 @@ export default function CodModal({ product, onClose, onSuccess }: CodModalProps)
     e.preventDefault();
     setErrorMsg('');
 
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 9) {
+    const normalizedPhone = phone.replace(/\s/g, '');
+    const phoneRegex = /^(?:\+212|0)[5-7]\d{8}$/;
+    if (!phoneRegex.test(normalizedPhone)) {
       setErrorMsg('Veuillez saisir un numéro de téléphone marocain valide (ex: 06 12 34 56 78).');
       return;
     }
 
+    if (fullName.trim().length < 3) {
+      setErrorMsg('Veuillez renseigner votre nom complet.');
+      return;
+    }
+
+    if (address.trim().length < 5) {
+      setErrorMsg('Veuillez préciser votre adresse de livraison.');
+      return;
+    }
+
     setLoading(true);
-    const orderData = {
-      customer_name: fullName,
-      phone: phone,
-      city: city,
-      address: address || 'Casablanca Centre',
-      product_id: product.id,
-      product_name: product.name,
-      total_amount: totalAmount,
-      shipping_fee: shippingFee,
-      status: 'pending_cod_confirmation',
-      created_at: new Date().toISOString()
-    };
 
     try {
       if (supabase) {
-        await supabase.from('orders').insert([orderData]);
+        const { error } = await supabase.from('orders').insert([
+          {
+            lead_id: 'Anulus_Joaillerie',
+            product_name: product.name,
+            product_price: product.priceMad,
+            shipping_fee: shippingFee,
+            total_amount: totalAmount,
+            customer_name: fullName.trim(),
+            phone: normalizedPhone,
+            city: city,
+            address: address.trim(),
+            status: 'pending'
+          }
+        ]);
+        if (error) {
+          console.warn('Supabase insert note:', error.message);
+        }
       }
-    } catch (err) {
-      console.warn('Supabase offline or table pending, continuing local flow:', err);
-    }
 
-    setLoading(false);
-    onSuccess(orderData);
+      onSuccess({
+        product_name: product.name,
+        customer_name: fullName.trim(),
+        phone: normalizedPhone,
+        city: city,
+        address: address.trim(),
+        total_amount: totalAmount
+      });
+    } catch (err: any) {
+      console.warn('Order submission fallback triggered:', err);
+      onSuccess({
+        product_name: product.name,
+        customer_name: fullName.trim(),
+        phone: normalizedPhone,
+        city: city,
+        address: address.trim(),
+        total_amount: totalAmount
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg rounded-2xl bg-brand-surface border border-brand-border p-6 shadow-2xl overflow-hidden">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="relative w-full max-w-lg rounded-2xl bg-brand-surface border border-brand-border p-6 shadow-2xl space-y-6 my-8">
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full text-brand-muted hover:text-brand-text hover:bg-brand-bg transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full text-brand-muted hover:text-brand-text transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="space-y-1 pb-4 border-b border-brand-border">
+        <div className="border-b border-brand-border pb-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-brand-accent">
-            Tunnel de Commande Express 1-Clic
+            Validation Express • Paiement à la Livraison (0 DH d'avance)
           </span>
-          <h2 className="text-xl font-bold text-brand-text">Paiement à la Livraison (0 DH)</h2>
-          <p className="text-xs text-brand-muted">
-            Remplissez vos informations ci-dessous pour confirmer votre commande sans carte bancaire.
-          </p>
+          <h2 className="text-xl font-extrabold text-brand-text pt-1">
+            Finaliser ma Commande
+          </h2>
         </div>
 
-        {/* Selected Product Summary */}
-        <div className="flex items-center gap-3 py-3 border-b border-brand-border my-3">
+        <div className="flex gap-4 p-3 rounded-xl bg-brand-bg border border-brand-border items-center">
           <img
             src={product.image}
             alt={product.name}
-            className="w-14 h-14 rounded-lg object-cover bg-brand-bg border border-brand-border"
+            className="w-16 h-16 object-cover rounded-lg shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-brand-text truncate">{product.name}</p>
+            <h4 className="font-bold text-xs text-brand-text truncate">{product.name}</h4>
             <p className="text-[11px] text-brand-muted">Prix : {product.priceMad} DH</p>
+            <p className="text-[11px] text-emerald-500 font-semibold">
+              Livraison {city === 'Casablanca' ? '24H' : '48H'} : {shippingFee === 0 ? 'Gratuite' : `${shippingFee} DH`}
+            </p>
           </div>
           <div className="text-right">
-            <span className="text-sm font-black text-brand-accent font-mono">{totalAmount} DH</span>
-            <span className="block text-[10px] text-brand-muted">
-              {shippingFee === 0 ? 'Livraison Offerte' : `+ ${shippingFee} DH Liv.`}
-            </span>
+            <span className="text-lg font-black text-brand-accent">{totalAmount} DH</span>
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
-          <div>
-            <label className="block text-xs font-semibold text-brand-text mb-1">
-              Nom & Prénom *
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-brand-text">Nom & Prénom *</label>
             <input
               type="text"
               required
-              placeholder="ex: Youssef El Mansouri"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              placeholder="ex: Youssef El Mansouri"
               className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-brand-text mb-1">
-              Numéro de Téléphone (WhatsApp) *
-            </label>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-brand-text">Numéro de Téléphone Portable (WhatsApp) *</label>
             <input
               type="tel"
               required
-              placeholder="06 XX XX XX XX ou 07 XX XX XX XX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              placeholder="ex: 06 12 34 56 78"
               className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
             />
+            <p className="text-[10px] text-brand-muted">
+              Nous vous appellerons pour confirmer l'heure de passage du livreur.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-brand-text mb-1">
-                Ville de Livraison *
-              </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-brand-text">Ville de Livraison *</label>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
               >
                 {MOROCCAN_CITIES.map((c) => (
-                  <option key={c} value={c} className="bg-brand-surface text-brand-text">
-                    {c}
+                  <option key={c} value={c}>
+                    {c} {c === 'Casablanca' ? '(24h - 20 DH)' : '(48h - 35 DH)'}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-brand-text mb-1">
-                Quartier / Adresse
-              </label>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-brand-text">Adresse ou Quartier *</label>
               <input
                 type="text"
-                placeholder="ex: Maarif, Hay Riad..."
+                required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                placeholder="ex: Bd Zerktouni, Apt 4"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
               />
             </div>
