@@ -1,4 +1,3 @@
-'use strict';
 'use client';
 
 import React, { useState } from 'react';
@@ -10,57 +9,50 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ onSelectProduct }: ProductGridProps) {
-  const [activeCategory, setActiveCategory] = useState<string>('Tous');
-
-  const categories = ['Tous', 'Bagues', 'Colliers', 'Bracelets', 'Boucles d\'oreilles', 'Coffrets'];
+  const categories = ['Tous', ...Array.from(new Set(PRODUCTS.map((p) => p.category)))];
+  const [activeCategory, setActiveCategory] = useState('Tous');
 
   const filtered = activeCategory === 'Tous'
     ? PRODUCTS
-    : PRODUCTS.filter((p) => p.category.toLowerCase().includes(activeCategory.toLowerCase().substring(0, 4)));
+    : PRODUCTS.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="catalogue" className="py-16 md:py-24 bg-[#FDFBF7]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Title */}
-        <div className="text-center space-y-3 mb-10">
-          <p className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">Nos Créations en Or & Argent</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#0F172A] font-bold">
-            La Collection Joaillerie Anulus
-          </h2>
-          <p className="text-sm text-gray-600 max-w-xl mx-auto font-light">
-            Chaque pièce est accompagnée de son écrin de luxe et de son certificat de garantie. Commandez en toute sérénité avec paiement à la réception.
-          </p>
+    <section id="catalogue" className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+        <h2 className="text-2xl sm:text-4xl font-extrabold text-brand-text">
+          Collection Officielle Anulus Joaillerie
+        </h2>
+        <p className="text-xs sm:text-sm text-brand-muted">
+          Sélection exclusive disponible en stock immédiat à Casablanca. Expédition 24h/48h avec paiement à la réception.
+        </p>
 
-          {/* Filter tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                  activeCategory === cat
-                    ? 'bg-[#0F172A] text-white shadow-sm'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filtered.map((prod) => (
-            <ProductCard
-              key={prod.id}
-              product={prod}
-              onOpenCodModal={onSelectProduct}
-            />
+        {/* Category Filter Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                activeCategory === cat
+                  ? 'bg-brand-accent text-white shadow-md'
+                  : 'bg-brand-surface border border-brand-border text-brand-muted hover:text-brand-text'
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
+      </div>
 
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filtered.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onSelect={onSelectProduct}
+          />
+        ))}
       </div>
     </section>
   );

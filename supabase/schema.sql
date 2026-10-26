@@ -1,20 +1,20 @@
--- Supabase Schema for Anulus Joaillerie Cash-on-Delivery (COD) Orders
-CREATE TABLE IF NOT EXISTS orders (
-  id BIGSERIAL PRIMARY KEY,
-  order_id TEXT UNIQUE NOT NULL,
-  customer_name TEXT NOT NULL,
-  customer_phone TEXT NOT NULL,
-  city TEXT NOT NULL,
-  address TEXT,
-  ring_size TEXT,
-  product_name TEXT NOT NULL,
-  product_price_mad NUMERIC NOT NULL,
-  shipping_fee_mad NUMERIC NOT NULL DEFAULT 0,
-  total_mad NUMERIC NOT NULL,
-  status TEXT DEFAULT 'pending_confirmation',
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- Orders Schema for Anulus Joaillerie Fast COD Engine
+create table if not exists public.orders (
+    id uuid default gen_random_uuid() primary key,
+    customer_name text not null,
+    phone text not null,
+    city text not null,
+    address text,
+    product_id text not null,
+    product_name text not null,
+    total_amount numeric not null,
+    shipping_fee numeric default 0,
+    status text default 'pending_cod_confirmation',
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Index for fast order lookups by phone or order_id
-CREATE INDEX IF NOT EXISTS idx_orders_phone ON orders (customer_phone);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON orders (status);
+alter table public.orders enable row level security;
+
+create policy "Allow anonymous order submissions"
+on public.orders for insert
+with check (true);

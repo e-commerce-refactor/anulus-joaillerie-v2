@@ -7,23 +7,33 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        gold: {
-          50: '#FDFBF7',
-          100: '#F3E5AB',
-          200: '#E6CA65',
-          500: '#D4AF37',
-          600: '#B89628',
-          700: '#8C701B',
-        },
-        slate: {
-          850: '#111827',
-          900: '#0F172A',
-          950: '#020617',
+        brand: {
+          bg: '#FDFBF7',
+          surface: '#FFFFFF',
+          border: '#EAE3D2',
+          text: '#0F172A',
+          muted: '#64748B',
+          accent: '#D4AF37',
+          accent2: '#8C701B',
         }
       },
-      fontFamily: {
-        serif: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+      keyframes: {
+
+        sparkle: {
+          '0%, 100%': { opacity: '0.3', transform: 'scale(0.8) rotate(0deg)' },
+          '50%': { opacity: '1', transform: 'scale(1.2) rotate(90deg)' },
+        },
+        gold_sheen: {
+          '0%': { backgroundPosition: '-100% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        }
+        
+      },
+      animation: {
+
+        'diamond-sparkle': 'sparkle 2.5s ease-in-out infinite',
+        'gold-sheen': 'gold_sheen 4s linear infinite',
+        
       }
     },
   },

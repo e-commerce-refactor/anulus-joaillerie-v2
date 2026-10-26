@@ -4,9 +4,23 @@
 
 @layer base {
   body {
-    @apply bg-[#FDFBF7] text-[#0F172A] font-sans antialiased selection:bg-[#D4AF37] selection:text-white;
+    background-color: #FDFBF7;
+    color: #0F172A;
+    font-family: Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
+  h1, h2, h3, h4 {
+    font-family: Playfair Display, Cormorant Garamond, serif;
   }
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
 }

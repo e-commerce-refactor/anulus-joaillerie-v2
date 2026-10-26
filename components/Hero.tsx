@@ -1,91 +1,98 @@
-'use strict';
 'use client';
 
 import React from 'react';
+import { ChevronRight, ShieldCheck, Truck, Clock, Sparkles } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#FDFBF7] via-white to-[#FDFBF7] py-16 md:py-24 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section className="relative overflow-hidden bg-brand-bg py-12 md:py-20 border-b border-brand-border">
+      {/* Ambient background lighting */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-brand-accent/15 blur-[120px] rounded-full pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
-          {/* Text block */}
-          <div className="space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold-100/60 border border-gold-500/30 text-xs font-semibold text-[#8C701B]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
-              Créations Joaillières & Métaux Précieux • Casablanca
+          {/* Left Text Block */}
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-surface border border-brand-border text-brand-accent text-xs font-semibold shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+              <span>💎 CRÉATIONS JOAILLIÈRES & OR 18K • CASABLANCA</span>
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#0F172A] leading-tight font-bold">
-              L'Élégance de l'Or, <br />
-              <span className="text-[#D4AF37] italic font-normal">l'Éclat Éternel.</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-brand-text">
+              L'Élégance de l'Or. L'Éclat Éternel.
             </h1>
 
-            <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-              Découvrez la collection de haute bijouterie <strong>Anulus</strong>. Bagues de fiançailles, colliers de perles fines et parures de mariage façonnées avec passion et certifiées or 18 carats.
+            <p className="text-base sm:text-lg text-brand-muted leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              Découvrez les joyaux d'exception de la maison <strong>Anulus Joaillerie</strong>. Bagues de fiançailles, solitaires or 18 carats et parures certifiées, livrées dans un écrin de prestige scellé.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <a
                 href="#catalogue"
-                className="w-full sm:w-auto text-center px-8 py-3.5 bg-[#0F172A] hover:bg-[#D4AF37] text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all tracking-wide uppercase"
+                className="w-full sm:w-auto text-center px-8 py-4 bg-brand-accent hover:brightness-110 text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
               >
-                Explorer la Collection
+                <span>Commander avec Paiement à la Livraison</span>
+                <ChevronRight className="w-4 h-4" />
               </a>
               <a
-                href="https://wa.me/212639156883?text=Salam%20Anulus%20Joaillerie%2C%20je%20souhaite%20consulter%20votre%20catalogue%20complet"
+                href="https://wa.me/212639156883?text=Salam%20Anulus Joaillerie%2C%20je%20souhaite%20consulter%20le%20catalogue"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto text-center px-8 py-3.5 bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full sm:w-auto text-center px-6 py-4 bg-brand-surface hover:bg-brand-surface/80 border border-brand-border text-brand-text text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2"
               >
-                <span>Conseiller Joaillier</span>
-                <span className="text-xs text-gray-400">📲</span>
+                <span>Conseiller WhatsApp 📲</span>
               </a>
             </div>
 
             {/* Micro assurances */}
-            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200/70 text-center">
+            <div className="grid grid-cols-3 gap-3 pt-6 border-t border-brand-border text-center">
               <div>
-                <p className="text-lg font-bold text-[#0F172A]">100%</p>
-                <p className="text-xs text-gray-500 font-medium">Or 18K & Argent 925</p>
+                <p className="text-lg font-black text-brand-text">0 DH</p>
+                <p className="text-[11px] text-brand-muted">Paiement à la livraison</p>
               </div>
               <div>
-                <p className="text-lg font-bold text-[#0F172A]">24-48h</p>
-                <p className="text-xs text-gray-500 font-medium">Livraison Partout au Maroc</p>
+                <p className="text-lg font-black text-brand-accent">24H / 48H</p>
+                <p className="text-[11px] text-brand-muted">Livraison express Maroc</p>
               </div>
               <div>
-                <p className="text-lg font-bold text-[#0F172A]">0 DH</p>
-                <p className="text-xs text-gray-500 font-medium">Paiement à la Réception</p>
+                <p className="text-lg font-black text-brand-accent2">100%</p>
+                <p className="text-[11px] text-brand-muted">Conforme & Garanti</p>
               </div>
             </div>
           </div>
 
-          {/* Image visual */}
-          <div className="relative mx-auto max-w-md lg:max-w-none">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] bg-gray-100">
-              <img
-                src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85"
-                alt="Bijoux d'exception Anulus Joaillerie Casablanca"
-                className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
-                <div className="text-white space-y-1">
-                  <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-semibold">Artisanat & Joaillerie</span>
-                  <p className="font-serif text-2xl font-bold">Certificat d'Authenticité Fourni</p>
-                  <p className="text-xs text-gray-200">Chaque création est gravée au poinçon officiel de l'Administration des Douanes marocaines.</p>
+          {/* Right Visual Card */}
+          <div className="lg:col-span-5 relative mx-auto max-w-md lg:max-w-none w-full">
+            <div className="relative rounded-2xl overflow-hidden bg-brand-surface p-2 border border-brand-border shadow-2xl">
+              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-brand-bg group">
+                <img
+                  src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
+                  alt="Anulus Joaillerie Bague Solitaire Or Blanc 18K"
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+                  <div className="text-white space-y-1">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-accent font-bold px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm">
+                      CERTIFICAT FOURNI
+                    </span>
+                    <p className="font-bold text-xl leading-tight">Anulus Joaillerie Bague Solitaire Or Blanc 18K</p>
+                    <p className="text-xs text-slate-300 font-light">Diamant Brillant Certifié 0.50 Ct & Poinçon Officiel Douane</p>
+                    <p className="text-lg font-black text-brand-accent pt-1">3400 DH</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Floating Trust Badge */}
-            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 hidden sm:flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center text-[#D4AF37] font-bold text-lg">
-                ★
-              </div>
-              <div>
-                <p className="text-xs font-bold text-gray-900">4.9/5 Avis Clients</p>
-                <p className="text-[11px] text-gray-500">+1 500 Clientes comblées au Maroc</p>
+              {/* Floating Social Proof Pill */}
+              <div className="absolute -bottom-4 -left-4 bg-brand-surface p-3.5 rounded-xl shadow-xl border border-brand-border hidden sm:flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent font-bold">
+                  ★
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-brand-text">4.9/5 Avis Clients</p>
+                  <p className="text-[11px] text-brand-muted">Recommandé par 38.5k abonnés</p>
+                </div>
               </div>
             </div>
           </div>

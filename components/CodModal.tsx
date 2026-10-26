@@ -1,15 +1,29 @@
-'use strict';
 'use client';
 
 import React, { useState } from 'react';
-import { Product, MOROCCAN_CITIES } from '../data/products';
-import { supabase } from '../lib/supabase';
+import { X, Truck, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Product } from '../data/products';
+import { supabase } from '../lib/supabaseClient';
 
 interface CodModalProps {
   product: Product | null;
   onClose: () => void;
   onSuccess: (orderInfo: any) => void;
 }
+
+const MOROCCAN_CITIES = [
+  'Casablanca',
+  'Rabat',
+  'Marrakech',
+  'Tanger',
+  'Fès',
+  'Agadir',
+  'Meknès',
+  'Oujda',
+  'Kénitra',
+  'Tétouan',
+  'Autre Ville (Maroc)'
+];
 
 export default function CodModal({ product, onClose, onSuccess }: CodModalProps) {
   if (!product) return null;
@@ -18,235 +32,180 @@ export default function CodModal({ product, onClose, onSuccess }: CodModalProps)
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('Casablanca');
   const [address, setAddress] = useState('');
-  const [ringSize, setRingSize] = useState('52 (Standard)');
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Shipping calculation logic
-  const isCasablanca = city.toLowerCase() === 'casablanca';
-  const shippingFee = isCasablanca ? 0 : 35;
-  const totalToPay = product.priceMad + shippingFee;
+  const shippingFee = city === 'Casablanca'
+    ? (product.priceMad >= 500 ? 0 : 20)
+    : (product.priceMad >= 1000 ? 0 : 35);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const totalAmount = product.priceMad + shippingFee;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    // Moroccan phone verification (06 / 07 / +212)
-    const cleanPhone = phone.replace(/\s+/g, '');
-    const phoneRegex = /^(?:\+212|0)[5-7]\d{8}$/;
-    if (!phoneRegex.test(cleanPhone)) {
-      setErrorMsg('Veuillez entrer un numéro de téléphone marocain valide (ex: 06 12 34 56 78).');
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 9) {
+      setErrorMsg('Veuillez saisir un numéro de téléphone marocain valide (ex: 06 12 34 56 78).');
       return;
     }
 
-    if (!fullName.trim() || fullName.trim().length < 3) {
-      setErrorMsg('Veuillez indiquer votre nom et prénom complets.');
-      return;
-    }
+    setLoading(true);
+    const orderData = {
+      customer_name: fullName,
+      phone: phone,
+      city: city,
+      address: address || 'Casablanca Centre',
+      product_id: product.id,
+      product_name: product.name,
+      total_amount: totalAmount,
+      shipping_fee: shippingFee,
+      status: 'pending_cod_confirmation',
+      created_at: new Date().toISOString()
+    };
 
-    setSubmitting(true);
-    const generatedOrderId = `ANL-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    // Persist to Supabase
     try {
-      const summaryText = product.category === 'Bagues' 
-        ? `${product.name} (Taille: ${ringSize})` 
-        : product.name;
-
-      supabase.from('orders').insert([
-        {
-          ref: generatedOrderId,
-          customer_name: fullName,
-          phone: cleanPhone,
-          city: city,
-          address: address || 'Non précisée',
-          items_summary: summaryText,
-          total: totalToPay,
-          status: 'en_attente',
-          notes: `Livraison: ${shippingFee === 0 ? 'Gratuite (Casablanca)' : '35 DH (Hors Casablanca)'}`
-        }
-      ]).then((res) => {
-        if (res.error) {
-          console.warn('Supabase insert warning:', res.error);
-        }
-      });
+      if (supabase) {
+        await supabase.from('orders').insert([orderData]);
+      }
     } catch (err) {
-      console.log('Supabase sync notice:', err);
+      console.warn('Supabase offline or table pending, continuing local flow:', err);
     }
 
-    setTimeout(() => {
-      setSubmitting(false);
-      onSuccess({
-        orderId: generatedOrderId,
-        productName: product.name,
-        priceMad: product.priceMad,
-        shippingFee,
-        totalToPay,
-        customerName: fullName,
-        customerPhone: phone,
-        customerCity: city,
-        customerAddress: address,
-        ringSize: product.category === 'Bagues' ? ringSize : undefined,
-      });
-    }, 600);
+    setLoading(false);
+    onSuccess(orderData);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="relative w-full max-w-lg rounded-2xl bg-brand-surface border border-brand-border p-6 shadow-2xl overflow-hidden">
         
-        {/* Header */}
-        <div className="bg-[#0F172A] text-white p-4 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] tracking-widest text-[#D4AF37] uppercase font-bold">Commande Éclair 1-Clic</span>
-            <h3 className="font-serif text-lg font-bold">Paiement à la Livraison (COD)</h3>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white text-xl p-1 font-bold"
-          >
-            ✕
-          </button>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full text-brand-muted hover:text-brand-text hover:bg-brand-bg transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="space-y-1 pb-4 border-b border-brand-border">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-brand-accent">
+            Tunnel de Commande Express 1-Clic
+          </span>
+          <h2 className="text-xl font-bold text-brand-text">Paiement à la Livraison (0 DH)</h2>
+          <p className="text-xs text-brand-muted">
+            Remplissez vos informations ci-dessous pour confirmer votre commande sans carte bancaire.
+          </p>
         </div>
 
         {/* Selected Product Summary */}
-        <div className="bg-amber-50/50 p-4 border-b border-amber-100 flex items-center gap-3">
+        <div className="flex items-center gap-3 py-3 border-b border-brand-border my-3">
           <img
             src={product.image}
             alt={product.name}
-            className="w-14 h-14 object-cover rounded-lg border border-amber-200"
+            className="w-14 h-14 rounded-lg object-cover bg-brand-bg border border-brand-border"
           />
           <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-bold text-gray-900 truncate">{product.name}</h4>
-            <p className="text-xs text-gray-500">{product.material}</p>
-            <p className="text-sm font-bold text-[#0F172A] pt-0.5">
-              {product.priceMad.toLocaleString('fr-FR')} DH
-            </p>
+            <p className="text-xs font-bold text-brand-text truncate">{product.name}</p>
+            <p className="text-[11px] text-brand-muted">Prix : {product.priceMad} DH</p>
+          </div>
+          <div className="text-right">
+            <span className="text-sm font-black text-brand-accent font-mono">{totalAmount} DH</span>
+            <span className="block text-[10px] text-brand-muted">
+              {shippingFee === 0 ? 'Livraison Offerte' : `+ ${shippingFee} DH Liv.`}
+            </span>
           </div>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
-          {errorMsg && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg font-medium">
-              ⚠️ {errorMsg}
-            </div>
-          )}
-
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-3.5 pt-2">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Nom et Prénom *
+            <label className="block text-xs font-semibold text-brand-text mb-1">
+              Nom & Prénom *
             </label>
             <input
               type="text"
               required
-              placeholder="Ex: Fatima Zahra El Idrissi"
+              placeholder="ex: Youssef El Mansouri"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full text-sm px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Numéro de Téléphone WhatsApp *
+            <label className="block text-xs font-semibold text-brand-text mb-1">
+              Numéro de Téléphone (WhatsApp) *
             </label>
             <input
               type="tel"
               required
-              placeholder="06 XX XX XX XX"
+              placeholder="06 XX XX XX XX ou 07 XX XX XX XX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full text-sm px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent font-mono"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
             />
-            <p className="text-[11px] text-gray-400 mt-1">Le livreur vous contactera sur ce numéro avant le passage.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-semibold text-brand-text mb-1">
                 Ville de Livraison *
               </label>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full text-sm px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] bg-white"
+                className="w-full px-3 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
               >
                 {MOROCCAN_CITIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c} className="bg-brand-surface text-brand-text">
+                    {c}
+                  </option>
                 ))}
               </select>
             </div>
 
-            {product.category === 'Bagues' && (
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Tour de Doigt
-                </label>
-                <select
-                  value={ringSize}
-                  onChange={(e) => setRingSize(e.target.value)}
-                  className="w-full text-sm px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] bg-white"
-                >
-                  <option value="50">50 (Fin)</option>
-                  <option value="52 (Standard)">52 (Standard)</option>
-                  <option value="54">54 (Moyen)</option>
-                  <option value="56">56 (Large)</option>
-                  <option value="GuideWhatsApp">Aide par WhatsApp</option>
-                </select>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
-              Adresse ou Quartier (Optionnel)
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: Boulevard Ghandi, Résidence Les Fleurs"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full text-sm px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            />
-          </div>
-
-          {/* Pricing calculation */}
-          <div className="bg-gray-50 p-3.5 rounded-lg text-xs space-y-1.5 border border-gray-200">
-            <div className="flex justify-between text-gray-600">
-              <span>Prix de la pièce</span>
-              <span>{product.priceMad.toLocaleString('fr-FR')} DH</span>
-            </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Frais de livraison ({city})</span>
-              <span className={shippingFee === 0 ? 'text-[#059669] font-bold' : ''}>
-                {shippingFee === 0 ? 'Gratuit (Casablanca)' : `${shippingFee} DH`}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm font-bold text-[#0F172A] pt-1 border-t border-gray-200">
-              <span>Total à payer au livreur</span>
-              <span className="text-base text-[#D4AF37]">{totalToPay.toLocaleString('fr-FR')} DH</span>
+            <div>
+              <label className="block text-xs font-semibold text-brand-text mb-1">
+                Quartier / Adresse
+              </label>
+              <input
+                type="text"
+                placeholder="ex: Maarif, Hay Riad..."
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-brand-bg border border-brand-border text-brand-text text-xs focus:outline-none focus:border-brand-accent"
+              />
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-3.5 bg-[#0F172A] hover:bg-[#D4AF37] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 uppercase tracking-wider"
-          >
-            {submitting ? (
-              <span>Validation en cours...</span>
-            ) : (
-              <>
-                <span>Confirmer Ma Commande (COD)</span>
-                <span>✓</span>
-              </>
-            )}
-          </button>
+          {errorMsg && (
+            <p className="text-xs text-red-500 font-medium pt-1">
+              {errorMsg}
+            </p>
+          )}
 
-          <p className="text-[11px] text-gray-400 text-center">
-            🔒 Vos informations sont strictement confidentielles. Zéro paiement requis aujourd'hui.
-          </p>
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-brand-accent hover:brightness-110 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <span>Validation en cours...</span>
+              ) : (
+                <>
+                  <span>Confirmer ma Commande ({totalAmount} DH)</span>
+                  <CheckCircle2 className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-[10px] text-brand-muted text-center pt-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-brand-accent" />
+            <span>Paiement en espèces uniquement à la livraison après inspection de l'article</span>
+          </div>
         </form>
 
       </div>

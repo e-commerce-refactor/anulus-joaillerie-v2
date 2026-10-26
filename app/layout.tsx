@@ -2,8 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Anulus Joaillerie Casablanca — Bijoux Or 18K & Argent Garanti',
-  description: 'Maison de haute bijouterie à Casablanca. Bagues, colliers, bracelets et créations or 18k. Livraison partout au Maroc avec paiement à la réception.',
+  title: 'Anulus Joaillerie • Boutique Officielle Maroc',
+  description: 'Commandez en ligne avec paiement cash à la livraison (0 DH) partout au Maroc.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="scroll-smooth">
-      <body className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#0F172A]">
+      <body className="min-h-screen flex flex-col bg-brand-bg text-brand-text">
         {children}
       </body>
     </html>

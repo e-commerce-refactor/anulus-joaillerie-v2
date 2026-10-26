@@ -1,45 +1,41 @@
-'use strict';
 'use client';
 
 import React from 'react';
+import { ShieldCheck, Truck, RotateCcw, Clock } from 'lucide-react';
 
 export default function TrustBadges() {
-  const guarantees = [
-    {
-      title: "Or 18K & Argent Certifié",
-      desc: "Chaque pièce porte le poinçon légal de garantie et d'authenticité",
-      icon: "💎"
-    },
-    {
-      title: "Paiement à la Réception",
-      desc: "Inspectez votre bijou avant de régler en espèces au livreur",
-      icon: "💵"
-    },
-    {
-      title: "Livraison Partout au Maroc",
-      desc: "Expédition sécurisée sous 24h à Casablanca et 48h dans toutes les villes",
-      icon: "🇲🇦"
-    },
-    {
-      title: "Service Client Dédié",
-      desc: "Assistance personnalisée sur WhatsApp 7j/7 pour le choix de vos parures",
-      icon: "📲"
-    }
-  ];
-
   return (
-    <section className="py-12 bg-white border-y border-gray-100">
+    <section className="bg-brand-surface border-b border-brand-border py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {guarantees.map((g, idx) => (
-            <div key={idx} className="p-5 rounded-xl bg-gray-50/70 border border-gray-100 flex items-start gap-4">
-              <span className="text-3xl">{g.icon}</span>
-              <div>
-                <h4 className="font-serif text-sm font-bold text-gray-900">{g.title}</h4>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">{g.desc}</p>
-              </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
+            <Truck className="w-7 h-7 text-brand-accent shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-brand-text">Livraison Express</p>
+              <p className="text-[11px] text-brand-muted">24h Casa • 48h Maroc</p>
             </div>
-          ))}
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
+            <ShieldCheck className="w-7 h-7 text-brand-accent shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-brand-text">Paiement à Réception</p>
+              <p className="text-[11px] text-brand-muted">Payez en espèces après vérification</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
+            <RotateCcw className="w-7 h-7 text-brand-accent shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-brand-text">Échange Simple</p>
+              <p className="text-[11px] text-brand-muted">Garantie satisfaction totale</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-bg/50 border border-brand-border/60">
+            <Clock className="w-7 h-7 text-brand-accent shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-brand-text">Support Dédié</p>
+              <p className="text-[11px] text-brand-muted">Assistance WhatsApp 7j/7</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
