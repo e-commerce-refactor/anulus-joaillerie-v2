@@ -31,14 +31,14 @@ export default function Hero() {
 
           <div className="lg:col-span-6 grid grid-cols-2 gap-4">
             <img
-              src="https://cdn.shopify.com/s/files/1/0798/0997/0503/files/product-ig-5a4c0942-1792441654914.jpg?v=1792443423"
-              alt="Boucles créoles rondes Anulus argent"
+              src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80"
+              alt="Anulus Joaillerie Bague Solitaire Or Blanc 18K"
               className="w-full aspect-[3/4] object-cover rounded-2xl border border-brand-border shadow-lg"
             />
             <div className="flex flex-col justify-between p-6 rounded-2xl bg-brand-surface border border-brand-border">
               <span className="text-xs uppercase font-bold text-brand-muted">Drop Actuel</span>
-              <p className="text-xl font-black text-brand-text">Boucles créoles rondes Anulus argent</p>
-              <p className="text-2xl font-black text-brand-accent">790 DH</p>
+              <p className="text-xl font-black text-brand-text">Anulus Joaillerie Bague Solitaire Or Blanc 18K</p>
+              <p className="text-2xl font-black text-brand-accent">3400 DH</p>
             </div>
           </div>
         </div>

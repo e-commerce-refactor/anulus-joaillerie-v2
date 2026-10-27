@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Phone, Mail, Instagram, ShieldCheck, MapPin } from 'lucide-react';
 
 export default function Footer() {
@@ -51,9 +52,14 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
         <p>© 2026 Anulus Joaillerie. Tous droits réservés.</p>
-        <p className="text-brand-muted/70">Propulsé par Next.js Edge & Supabase Maroc</p>
+        <div className="flex items-center gap-4">
+          <Link href="/admin" className="text-brand-muted hover:text-brand-accent transition-colors flex items-center gap-1 opacity-70 hover:opacity-100">
+            <span>🔒</span> Espace Admin
+          </Link>
+          <p className="text-brand-muted/70">Propulsé par Next.js Edge & Supabase Maroc</p>
+        </div>
       </div>
     </footer>
   );
